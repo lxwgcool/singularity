@@ -1,0 +1,58 @@
+BootStrap: docker
+From: ubuntu:xenial
+
+%labels
+    Maintainer uconn-hpc
+
+%setup
+	mkdir ${SINGULARITY_ROOTFS}/home/bind
+	mkdir -p ${SINGULARITY_ROOTFS}/home/software/3DSlicer
+
+%help
+	A baseline container of Ubuntu 16.04 LTS Xenial Xerus
+
+%environment
+	LC_ALL=C
+	LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib:/lib64:/lib
+	TZ='America/New_York'
+	export LC_ALL LD_LIBRARY_PATH TZ
+
+%post
+	apt-get update
+	#Install basic package (such as editor)
+	apt-get install -y wget \
+			   xz-utils \
+		           cmake \
+		           vim \
+		           less
+
+        #Get 3DSlicer
+	wget -P /home/software/3DSlicer https://download.slicer.org/bitstream/1023242
+	tar -xvf /home/software/3DSlicer/1023242 -C /home/software/3DSlicer
+		
+	#For 3DSlicer
+        apt-get install -y libfontconfig1 \
+	 		   libxrender1 \
+ 	      		   libgl1-mesa-dev \
+			   libglu1-mesa \
+			   libglu1-mesa-dev \
+			   libxtst6 \
+			   libxt-dev \
+			   libpulse-dev \
+			   libnss3-dev \
+			   libxcomposite-dev \
+			   libxcursor-dev \
+			   libxi-dev \
+			   libxrandr-dev \
+			   libasound2-dev \
+			   libegl1-mesa-dev	
+
+%test
+    echo "Image Build Date: $(date)"
+    echo "Ubuntu $(cat /etc/os-release | grep VERSION= | sed 's|VERSION=||' | sed 's|"||g')"
+
+%runscript
+    echo "Ubuntu $(cat /etc/os-release | grep VERSION= | sed 's|VERSION=||' | sed 's|"||g')"
+    echo "Image Build Date: JUL 22 2019"
+
+
